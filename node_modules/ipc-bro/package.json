@@ -1,0 +1,35 @@
+{
+  "name": "ipc-bro",
+  "version": "1.0.0",
+  "description": "ipc-bro is a lightweight IPC (Inter-Process Communication) library for Node.js that lets multiple Node.js projects communicate directly through sockets or named pipes.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nirikshan/ipc-bro.git"
+  },
+  "keywords": [
+    "ipc",
+    "interprocess",
+    "nodejs",
+    "socket",
+    "communication"
+  ],
+  "author": "Nirikshan Bhusal (https://github.com/nirikshan)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nirikshan/ipc-bro/issues"
+  },
+  "homepage": "https://github.com/nirikshan/ipc-bro#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "msgpackr": "^1.11.5"
+  }
+}
