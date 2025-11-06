@@ -12,7 +12,7 @@ This integration provides decorators, modules, and services for seamless inter-s
 // main.ts
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { IPCServerModule } from "./ipc/nestjs/ipc-server.module";
+import { IPCServerModule } from "nestjs-ipc";
 
 async function bootstrap() {
   // Start Gateway
@@ -42,7 +42,7 @@ PORT=3001
 
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { IPCClientModule } from './ipc/nestjs/ipc-client.module';
+import { IPCClientModule } from 'nestjs-ipc';
 import { OrderController } from './order.controller';
 
 @Module({
@@ -55,9 +55,7 @@ export class AppModule {}
 
 // order.controller.ts
 import { Controller } from '@nestjs/common';
-import { IPCMethod } from './ipc/nestjs/ipc-method.decorator';
-import { IPCClientService } from './ipc/nestjs/ipc-client.service';
-import { IPCContext } from './ipc/core/types';
+import { IPCMethod  , IPCClientService , IPCContext } from 'nestjs-ipc';
 
 @Controller('orders')
 export class OrderController {
@@ -377,7 +375,7 @@ Injectable service for making IPC calls to other services.
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import { IPCClientService } from "./ipc/nestjs/ipc-client.service";
+import { IPCClientService } from "nestjs-ipc";
 
 @Injectable()
 export class OrderService {
@@ -585,7 +583,7 @@ Injectable service for accessing Gateway features (Gateway only).
 ```typescript
 // Gateway's admin.controller.ts
 import { Controller, Get } from "@nestjs/common";
-import { IPCServerService } from "./ipc/nestjs/ipc-server.module";
+import { IPCServerService } from "nestjs-ipc";
 
 @Controller("admin")
 export class AdminController {
@@ -871,8 +869,7 @@ async getUser(
 ```typescript
 // user.service.ts
 import { Injectable } from "@nestjs/common";
-import { IPCMethod } from "./ipc/nestjs/ipc-method.decorator";
-import { IPCContext } from "./ipc/core/types";
+import { IPCMethod, IPCContext } from "nestjs-ipc";
 
 @Injectable()
 export class UserService {
@@ -913,9 +910,7 @@ export class AppModule {}
 ```typescript
 // order.controller.ts
 import { Controller } from "@nestjs/common";
-import { IPCMethod } from "./ipc/nestjs/ipc-method.decorator";
-import { IPCClientService } from "./ipc/nestjs/ipc-client.service";
-import { IPCContext } from "./ipc/core/types";
+import { IPCClientService, IPCMethod, IPCContext } from "nestjs-ipc";
 
 @Controller("orders")
 export class OrderController {
@@ -958,9 +953,9 @@ import {
   IPCMethod,
   IPCValidate,
   IPCTimeout,
-} from "./ipc/nestjs/ipc-method.decorator";
-import { IPCClientService } from "./ipc/nestjs/ipc-client.service";
-import { IPCContext } from "./ipc/core/types";
+  IPCClientService,
+  IPCContext,
+} from "nestjs-ipc";
 
 @Controller("orders")
 export class OrderController {
@@ -1076,7 +1071,7 @@ export class UserController {
 // Gateway's main.ts
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { IPCServerModule } from "./ipc/nestjs/ipc-server.module";
+import { IPCServerModule } from "nestjs-ipc";
 
 async function bootstrap() {
   // Start Gateway
@@ -1096,7 +1091,7 @@ bootstrap();
 
 // admin.controller.ts
 import { Controller, Get } from "@nestjs/common";
-import { IPCServerModule } from "./ipc/nestjs/ipc-server.module";
+import { IPCServerModule } from "nestjs-ipc";
 
 @Controller("admin")
 export class AdminController {
@@ -1410,15 +1405,6 @@ await this.ipc.call('user-service', 'getUser', {}); // ❌
 4. **Use parallel calls** with `callAll()` (2-5x faster)
 5. **Set appropriate timeouts** (don't wait unnecessarily)
 6. **Use connection pooling** for high throughput
-
----
-
-## 🔗 Related Documentation
-
-- [IPC Server Core Documentation](../core/IPC-SERVER-README.md)
-- [IPC Client Core Documentation](../core/IPC-CLIENT-README.md)
-- [Types Documentation](../core/TYPES-README.md)
-- [Performance Testing](../ipc-test/README.md)
 
 ---
 
