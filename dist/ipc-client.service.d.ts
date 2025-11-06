@@ -3,13 +3,17 @@
  */
 import { OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { IPCClient, IPCClientConfig } from "ipc-bro";
+import { DiscoveryService, MetadataScanner, ModuleRef } from "@nestjs/core";
 export declare const IPC_CLIENT_TOKEN = "IPC_CLIENT";
 export declare const IPC_CLIENT_CONFIG = "IPC_CLIENT_CONFIG";
 export declare class IPCClientService implements OnModuleInit, OnModuleDestroy {
     private readonly client;
     private readonly config;
+    private readonly discovery;
+    private readonly moduleRef;
+    private readonly metadataScanner;
     private readonly logger;
-    constructor(client: IPCClient, config: IPCClientConfig);
+    constructor(client: IPCClient, config: IPCClientConfig, discovery: DiscoveryService, moduleRef: ModuleRef, metadataScanner: MetadataScanner);
     onModuleInit(): Promise<void>;
     onModuleDestroy(): Promise<void>;
     /**
@@ -38,4 +42,5 @@ export declare class IPCClientService implements OnModuleInit, OnModuleDestroy {
      * Get raw client instance
      */
     getClient(): IPCClient;
+    private discoverAndRegisterMethods;
 }

@@ -1,6 +1,6 @@
 {
   "name": "nestjs-ipc",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "NestJS integration for ipc-bro for simple inter-process communication between Node.js microservices.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

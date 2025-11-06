@@ -14,8 +14,9 @@ exports.IPCClientService = exports.IPCClientModule = exports.IPC_CLIENT_CONFIG =
 exports.getIPCClient = getIPCClient;
 const common_1 = require("@nestjs/common");
 const ipc_bro_1 = require("ipc-bro");
-const ipc_client_service_1 = require("./ipc-client.service"); // ✅ NAMED IMPORT
+const ipc_client_service_1 = require("./ipc-client.service");
 Object.defineProperty(exports, "IPCClientService", { enumerable: true, get: function () { return ipc_client_service_1.IPCClientService; } });
+const core_1 = require("@nestjs/core");
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -27,6 +28,7 @@ exports.IPC_CLIENT_CONFIG = "IPC_CLIENT_CONFIG";
 // ============================================================================
 // IPC CLIENT MODULE
 // ============================================================================
+console.log("this is message from ipc client nestjs...");
 let IPCClientModule = IPCClientModule_1 = class IPCClientModule {
     /**
      * Register module with configuration
@@ -138,7 +140,9 @@ let IPCClientModule = IPCClientModule_1 = class IPCClientModule {
 };
 exports.IPCClientModule = IPCClientModule;
 exports.IPCClientModule = IPCClientModule = IPCClientModule_1 = __decorate([
-    (0, common_1.Module)({})
+    (0, common_1.Module)({
+        providers: [core_1.DiscoveryService, core_1.MetadataScanner],
+    })
 ], IPCClientModule);
 // ============================================================================
 // HELPER

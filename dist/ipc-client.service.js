@@ -19,6 +19,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IPCClientService = exports.IPC_CLIENT_CONFIG = exports.IPC_CLIENT_TOKEN = void 0;
 const common_1 = require("@nestjs/common");
 const ipc_bro_1 = require("ipc-bro");
+const core_1 = require("@nestjs/core");
+const ipc_method_decorator_1 = require("./ipc-method.decorator");
 // ============================================================================
 // CONSTANTS
 // ============================================================================
@@ -29,14 +31,18 @@ exports.IPC_CLIENT_CONFIG = "IPC_CLIENT_CONFIG";
 // ============================================================================
 const common_2 = require("@nestjs/common");
 let IPCClientService = IPCClientService_1 = class IPCClientService {
-    constructor(client, config) {
+    constructor(client, config, discovery, moduleRef, metadataScanner) {
         this.client = client;
         this.config = config;
+        this.discovery = discovery;
+        this.moduleRef = moduleRef;
+        this.metadataScanner = metadataScanner;
         this.logger = new common_1.Logger(IPCClientService_1.name);
         this.logger.log("IPCClientService initialized");
     }
     async onModuleInit() {
         try {
+            this.discoverAndRegisterMethods();
             this.logger.log(`Connecting to Gateway: ${this.config.serviceName}`);
             await this.client.connect();
             this.logger.log("✓ Connected to Gateway");
@@ -86,11 +92,52 @@ let IPCClientService = IPCClientService_1 = class IPCClientService {
     getClient() {
         return this.client;
     }
+    async discoverAndRegisterMethods() {
+        this.logger.log("Discovering @IPCMethod decorated methods...");
+        console.log("this is fine");
+        // Get all providers and controllers
+        const providers = this.discovery.getProviders();
+        const controllers = this.discovery.getControllers();
+        const instances = [...providers, ...controllers];
+        let methodCount = 0;
+        // Scan each instance
+        for (const wrapper of instances) {
+            const { instance } = wrapper;
+            if (!instance || !Object.getPrototypeOf(instance)) {
+                continue;
+            }
+            // Get all method names from the prototype
+            const prototype = Object.getPrototypeOf(instance);
+            const methodNames = this.metadataScanner.getAllMethodNames(prototype);
+            // Check each method for @IPCMethod decorator
+            for (const methodName of methodNames) {
+                const methodRef = prototype[methodName];
+                // Get metadata from decorator
+                const metadata = Reflect.getMetadata(ipc_method_decorator_1.IPC_METHOD_METADATA_KEY, prototype, methodName);
+                if (metadata) {
+                    // This method has @IPCMethod decorator!
+                    const ipcMethodName = metadata.name || methodName;
+                    this.logger.log(`  → Registering: ${ipcMethodName} (${wrapper.name}.${methodName})`);
+                    // Create handler that binds to instance
+                    const handler = async (params, context) => {
+                        // Bind method to its instance (preserve 'this')
+                        return await methodRef.call(instance, params, context);
+                    };
+                    // Register with IPCClient
+                    this.client.registerMethod(ipcMethodName, handler);
+                    methodCount++;
+                }
+            }
+        }
+        this.logger.log(`✓ Registered ${methodCount} IPC methods`);
+    }
 };
 exports.IPCClientService = IPCClientService;
 exports.IPCClientService = IPCClientService = IPCClientService_1 = __decorate([
     (0, common_2.Injectable)(),
     __param(0, (0, common_1.Inject)(exports.IPC_CLIENT_TOKEN)),
     __param(1, (0, common_1.Inject)(exports.IPC_CLIENT_CONFIG)),
-    __metadata("design:paramtypes", [ipc_bro_1.IPCClient, Object])
+    __metadata("design:paramtypes", [ipc_bro_1.IPCClient, Object, core_1.DiscoveryService,
+        core_1.ModuleRef,
+        core_1.MetadataScanner])
 ], IPCClientService);

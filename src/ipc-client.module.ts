@@ -3,9 +3,15 @@
  */
 
 import { Module, DynamicModule, Provider, Logger } from "@nestjs/common";
-import { ModuleRef } from "@nestjs/core";
 import { IPCClient, IPCClientConfig } from "ipc-bro";
-import { IPCClientService } from "./ipc-client.service"; // ✅ NAMED IMPORT
+import { IPCClientService } from "./ipc-client.service";
+
+import {
+  DiscoveryModule,
+  DiscoveryService,
+  MetadataScanner,
+  ModuleRef,
+} from "@nestjs/core";
 
 // ============================================================================
 // CONSTANTS
@@ -22,7 +28,10 @@ export const IPC_CLIENT_CONFIG = "IPC_CLIENT_CONFIG";
 // IPC CLIENT MODULE
 // ============================================================================
 
-@Module({})
+console.log("this is message from ipc client nestjs...");
+@Module({
+  providers: [DiscoveryService, MetadataScanner],
+})
 export class IPCClientModule {
   /**
    * Register module with configuration
